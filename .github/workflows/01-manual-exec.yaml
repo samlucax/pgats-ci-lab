@@ -1,57 +1,46 @@
-# CI de N[ivel 01 - Disparo manual a partir de 1 clique
+# CI de Nível 01 - Disparo manual a partir de 1 clique
 
-# Nome do nosso pipiline
 name: 'Execucao Manual'
-
-# regras de disparo (gatilhos/triggers)
-# gatilho de exec manual = workflow_dispatch
 
 on:
   workflow_dispatch:
-    
-# trabalhos/tarefas dentro do pipeline = jobs
+
 jobs:
   e2e-tests:
-
-    #máquina onde o job vai rodar
     runs-on: ubuntu-latest
 
-    # passos do script de build
     steps:
-      # clone do projeto
+      # Clone do projeto
       - uses: actions/checkout@v4
 
-      # instala o node
+      # Instala o Node.js
       - uses: actions/setup-node@v4 
         with:
           node-version: 22.x 
-          
-      # instala o yarn
+
+      # Instala o Yarn
       - name: Instalando o Yarn
         run: npm install -g yarn
 
-      # instala as dependências do projeto
+      # Instala as dependências do projeto
       - name: Instala as dependências do projeto
-        run: yarn 
+        run: yarn
 
-      # Instalando Playwright
+      # Instala o Playwright
       - name: Instalando Playwright
         run: yarn playwright install
 
-      # Executa os testes
+      # Executa os testes E2E
       - name: Executa os testes E2E
         run: yarn run e2e
 
-      - name: Debug webhook presence
-        run: echo "Webhook está presente? ${{ secrets.DISCORD_WEBHOOK != '' }}"
-
+      # Notificação no Discord via cURL
       - name: Notifica no Discord
-        if: always() # garante envio mesmo com falha nos testes
-        uses: Ilshidur/action-discord@master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message: |
-            🔔 *Execução manual concluída!*
-            👤 Disparado por: `${{ github.actor }}`
-            📂 Repositório: `${{ github.repository }}`
-            ✅ Status: `${{ job.status }}`
+        if: always()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                     "content": "🔔 *Execução manual concluída!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
+                   }' \
+               ${{ secrets.DISCORD_WEBHOOK }}
