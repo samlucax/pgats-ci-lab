@@ -41,3 +41,14 @@ jobs:
       # Executa os testes
       - name: Executa os testes E2E
         run: yarn run e2e
+
+      - name: Notifica no Discord
+        if: always() # garante envio mesmo com falha nos testes
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            🔔 *Execução manual concluída!*
+            👤 Disparado por: `${{ github.actor }}`
+            📂 Repositório: `${{ github.repository }}`
+            ✅ Status: `${{ job.status }}`

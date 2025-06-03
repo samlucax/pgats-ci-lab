@@ -9,7 +9,7 @@ name: 'Execucao Agendada'
 on:
   schedule:
     # cronograma de execução do pipeline
-    - cron: '0 6 * * 1' # Executa diariamente à meia-noite
+    - cron: '0 3 4 6 *' # Executa diariamente à meia-noite
     
     
 # trabalhos/tarefas dentro do pipeline = jobs
@@ -44,3 +44,14 @@ jobs:
       # Executa os testes
       - name: Executa os testes E2E
         run: yarn run e2e
+
+      - name: Notifica no Discord
+        if: always() # executa mesmo se os testes falharem
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            🚀 *Execução agendada concluída!*
+            📅 Horário: ${{ github.event.schedule }}
+            🔍 Repositório: `${{ github.repository }}`
+            🧪 Resultado: `${{ job.status }}`
