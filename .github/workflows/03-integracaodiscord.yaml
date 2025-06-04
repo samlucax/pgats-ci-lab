@@ -7,8 +7,10 @@ jobs:
   test-webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: Teste de notificação no Discord
-        uses: Ilshidur/action-discord@master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message: "🚀 Teste de webhook simples do GitHub Actions!"
+      - name: Envia mensagem no Discord via CURL
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d '{"content": "✅ Teste enviado diretamente com curl!"}' \
+            ${{ secrets.DISCORD_WEBHOOK }}
+
