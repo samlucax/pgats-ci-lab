@@ -1,57 +1,47 @@
-# CI de Nivel N2 - Disparo manual a partir de 1 clique
+# CI de Nivel N2 - Disparo agendado e opcionalmente manual
 
-# Nome do nosso pipiline
 name: 'Execucao Agendada'
 
-# regras de disparo (gatilhos/triggers)
-# gatilho de exec manual = workflow_dispatch
-
 on:
+  # permite execução manual, se necessário
+  workflow_dispatch:
+
+  # agendamento para 4 de junho às 15h (UTC)
+  # como o GitHub Actions usa UTC, e você está no horário de Brasília (UTC-3),
+  # 15h Brasília = 18h UTC => cron: '0 18 4 6 *'
   schedule:
-    # cronograma de execução do pipeline
-    - cron: '0 3 4 6 *' # Executa diariamente à meia-noite
-    
-    
-# trabalhos/tarefas dentro do pipeline = jobs
+    - cron: '0 18 4 6 *'
+
 jobs:
   e2e-tests:
-
-    #máquina onde o job vai rodar
     runs-on: ubuntu-latest
 
-    # passos do script de build
     steps:
-      # clone do projeto
       - uses: actions/checkout@v4
 
-      # instala o node
-      - uses: actions/setup-node@v4 
+      - uses: actions/setup-node@v4
         with:
-          node-version: 22.x 
-          
-      # instala o yarn
+          node-version: 22.x
+
       - name: Instalando o Yarn
         run: npm install -g yarn
 
-      # instala as dependências do projeto
       - name: Instala as dependências do projeto
-        run: yarn 
+        run: yarn
 
-      # Instalando Playwright
       - name: Instalando Playwright
         run: yarn playwright install
 
-      # Executa os testes
       - name: Executa os testes E2E
         run: yarn run e2e
 
       - name: Notifica no Discord
-        if: always() # executa mesmo se os testes falharem
+        if: always()
         uses: Ilshidur/action-discord@master
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           message: |
             🚀 *Execução agendada concluída!*
-            📅 Horário: ${{ github.event.schedule }}
+            📅 Horário (UTC): ${{ github.event.schedule || 'Manual' }}
             🔍 Repositório: `${{ github.repository }}`
             🧪 Resultado: `${{ job.status }}`
