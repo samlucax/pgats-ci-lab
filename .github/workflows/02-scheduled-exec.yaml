@@ -6,9 +6,6 @@ on:
   # permite execução manual, se necessário
   workflow_dispatch:
 
-  # agendamento para 4 de junho às 15h (UTC)
-  # como o GitHub Actions usa UTC, e você está no horário de Brasília (UTC-3),
-  # 15h Brasília = 18h UTC => cron: '0 18 4 6 *'
   schedule:
     - cron: '0 18 4 6 *'
 
