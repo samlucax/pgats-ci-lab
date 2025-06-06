@@ -1,9 +1,14 @@
-# CI de Nível 01 - Disparo manual a partir de 1 clique
+# CI de Nível 03 - Disparo após a conclusão de um pipe de deploy
 
-name: 'Execucao Manual'
+
+name: 'Execucao Por Deploy'
+# gatilho de exec a partir de outro pipe = workflow_run
 
 on:
-  workflow_dispatch:
+  workflow_run: 
+    workflows: ['Execucao Manual']
+    types:
+      - completed
 
 jobs:
   e2e-tests:
