@@ -8,6 +8,7 @@ on:
 jobs:
   inspecao:
     runs-on: ubuntu-latest
+    needs: [inspecao]
     steps:
       - uses: actions/checkout@v4
 
