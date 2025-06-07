@@ -62,7 +62,7 @@ jobs:
 
       - name: Run E2E tests
         run: yarn run e2e
-
+    
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       - name: Deploy simulation
-        run: echo 'Deploy application'
+        run: echo 'Simulating deployment "success"'
 
   # Notificação no Discord via cURL
       - name: Notifica no Discord
