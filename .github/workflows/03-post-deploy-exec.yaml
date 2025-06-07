@@ -1,6 +1,5 @@
 # CI de Nível 03 - Disparo após a conclusão de um pipe de deploy
 
-
 name: 'Execucao Por Deploy'
 # gatilho de exec a partir de outro pipe = workflow_run
 
@@ -13,6 +12,9 @@ on:
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
+
+    # Usando Condicional apenas se o status do job anterior for "success"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       # Clone do projeto
