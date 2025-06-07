@@ -1,0 +1,46 @@
+# CI de Nível 01 - Disparo manual a partir de 1 clique
+
+name: 'Execucao Manual'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Clone do projeto
+      - uses: actions/checkout@v4
+
+      # Instala o Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      # Instala o Yarn
+      - name: Instalando o Yarn
+        run: npm install -g yarn
+
+      # Instala as dependências do projeto
+      - name: Instala as dependências do projeto
+        run: yarn
+
+      # Instala o Playwright
+      - name: Instalando Playwright
+        run: yarn playwright install
+
+      # Executa os testes E2E
+      - name: Executa os testes E2E
+        run: yarn run e2e
+
+      # Notificação no Discord via cURL
+      - name: Notifica no Discord
+        if: always()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                     "content": "🙌 *Execução manual concluída!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
+                   }' \
+               ${{ secrets.DISCORD_WEBHOOK }}
