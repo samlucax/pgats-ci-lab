@@ -82,6 +82,6 @@ jobs:
           curl -H "Content-Type: application/json" \
                -X POST \
                -d '{
-                     "content": "🔔 *Execução por deploy concluída!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
+                     "content": "🔔 *Execução com inspecao!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
                    }' \
                ${{ secrets.DISCORD_WEBHOOK }}          
