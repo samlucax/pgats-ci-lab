@@ -75,4 +75,13 @@ jobs:
       - name: Deploy simulation
         run: echo 'Deploy application'
 
-            
+  # Notificação no Discord via cURL
+      - name: Notifica no Discord
+        if: always()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                     "content": "🔔 *Execução por deploy concluída!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
+                   }' \
+               ${{ secrets.DISCORD_WEBHOOK }}          
