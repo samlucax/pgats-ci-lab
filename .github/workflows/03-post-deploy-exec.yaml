@@ -4,7 +4,7 @@ name: 'Execucao Por Deploy'
 # gatilho de exec a partir de outro pipe = workflow_run
 
 on:
-  workflow_run: 
+  workflow_run:
     workflows: ['Execucao Manual']
     types:
       - completed
@@ -21,9 +21,9 @@ jobs:
       - uses: actions/checkout@v4
 
       # Instala o Node.js
-      - uses: actions/setup-node@v4 
+      - uses: actions/setup-node@v4
         with:
-          node-version: 22.x 
+          node-version: 22.x
 
       # Instala o Yarn
       - name: Instalando o Yarn

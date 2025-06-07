@@ -13,4 +13,3 @@ jobs:
             -X POST \
             -d '{"content": "✅ Teste enviado diretamente com curl!"}' \
             ${{ secrets.DISCORD_WEBHOOK }}
-

@@ -62,7 +62,7 @@ jobs:
 
       - name: Run E2E tests
         run: yarn run e2e
-    
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
@@ -75,7 +75,7 @@ jobs:
       - name: Deploy simulation
         run: echo 'Simulating deployment "success"'
 
-  # Notificação no Discord via cURL
+      # Notificação no Discord via cURL
       - name: Notifica no Discord
         if: always()
         run: |
@@ -84,4 +84,4 @@ jobs:
                -d '{
                      "content": "🔔 *Execução com inspecao!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
                    }' \
-               ${{ secrets.DISCORD_WEBHOOK }}          
+               ${{ secrets.DISCORD_WEBHOOK }}
