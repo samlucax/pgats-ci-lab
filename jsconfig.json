@@ -11,7 +11,7 @@
     "strictNullChecks": false,
     "allowJs": true,
     "checkJs": true,
-    "maxNodeModuleJsDepth": 0,
+    "maxNodeModuleJsDepth": 0
   },
-  "include": ["src", "test"],
+  "include": ["src", "test"]
 }
