@@ -47,6 +47,14 @@ jobs:
           name: relatorio
           path: ./playwright-report
 
+      - name: Publicar resultado no PR
+        uses: dorny/test-reporter@v1
+        if: ${{ !cancelled() }}
+        with:
+          name: Test Report
+          path: ./test-results/results.xml
+          reporter: java-junit
+
       # Notificação no Discord via cURL
       - name: Notifica no Discord
         if: always()
