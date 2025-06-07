@@ -8,7 +8,7 @@ on:
 jobs:
   inspecao:
     runs-on: ubuntu-latest
-   
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +26,6 @@ jobs:
         run: yarn lint
   unidade:
     runs-on: ubuntu-latest
-    
 
     steps:
       - uses: actions/checkout@v4
