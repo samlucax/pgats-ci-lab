@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 21 * * *'
 
 jobs:
   e2e-tests:
@@ -32,4 +32,13 @@ jobs:
       - name: Executa os testes E2E
         run: yarn run e2e
 
-      
+      - name: Notifica no Discord
+        if: always()
+        uses: Ilshidur/action-discord@v1.0.0
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            🚀 *Execução agendada concluída!*
+            📅 Horário (UTC): ${{ github.event.schedule || 'Manual' }}
+            🔍 Repositório: `${{ github.repository }}`
+            🧪 Resultado: `${{ job.status }}`
