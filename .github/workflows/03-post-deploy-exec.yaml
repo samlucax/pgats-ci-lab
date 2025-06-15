@@ -1,0 +1,67 @@
+# CI de Nível 03 - Disparo após a conclusão de um pipe de deploy
+
+name: 'Execucao Por Deploy'
+# gatilho de exec a partir de outro pipe = workflow_run
+
+on:
+  workflow_run:
+    workflows: ['Execucao Manual']
+    types:
+      - completed
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    # Usando Condicional apenas se o status do job anterior for "success"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      # Clone do projeto
+      - uses: actions/checkout@v4
+
+      # Instala o Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      # Instala o Yarn
+      - name: Instalando o Yarn
+        run: npm install -g yarn
+
+      # Instala as dependências do projeto
+      - name: Instala as dependências do projeto
+        run: yarn
+
+      # Instala o Playwright
+      - name: Instalando Playwright
+        run: yarn playwright install
+
+      # Executa os testes E2E
+      - name: Executa os testes E2E
+        run: yarn run e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: relatorio
+          path: ./playwright-report
+
+      - name: Publicar resultado no PR
+        uses: dorny/test-reporter@v1
+        if: ${{ !cancelled() }}
+        with:
+          name: Test Report
+          path: ./test-results/results.xml
+          reporter: java-junit
+
+      # Notificação no Discord via cURL
+      - name: Notifica no Discord
+        if: always()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                     "content": "🔁 *Execução por deploy concluída!*\n👤 Disparado por: ${{ github.actor }}\n📂 Repositório: ${{ github.repository }}\n📄 Branch: ${{ github.ref_name }}\n✅ Status: ${{ job.status }}"
+                   }' \
+               ${{ secrets.DISCORD_WEBHOOK }}
